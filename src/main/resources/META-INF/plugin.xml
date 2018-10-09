@@ -1,0 +1,34 @@
+<idea-plugin>
+    <id>com.github.ipcjs.migrate-rtl</id>
+    <name>migrate-rtl</name>
+    <vendor email="gipcjs@gmail.com" url="http://ipcjs.win">IPCJS</vendor>
+
+    <description><![CDATA[
+    Refactor XML
+    1. Replace Start/End to Left/Right<br>
+    2. Replace Left/Right to Start/End<br>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>org.jetbrains.android</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <group id="MigrateRtl" text="Migrate RTL" description="Migrate RTL" popup="true">
+            <add-to-group group-id="RefactoringMenu4" anchor="after" relative-to-action="Migrate"/>
+            <action class="com.github.ipcjs.migratertl.ToLRMigrateAction"
+                    id="MigrateRtl.ToLR"
+                    text="Replace Start/End to Left/Right"/>
+            <action class="com.github.ipcjs.migratertl.ToSEMigrateAction"
+                    id="MigrateRtl.ToSE"
+                    text="Replace Left/Right to Start/End"/>
+        </group>
+    </actions>
+</idea-plugin>
