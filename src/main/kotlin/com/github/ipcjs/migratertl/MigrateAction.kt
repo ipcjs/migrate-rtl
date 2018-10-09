@@ -6,14 +6,12 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.actionSystem.EditorActionManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringActionHandler
 import com.intellij.refactoring.actions.BaseRefactoringAction
-import org.apache.xmlbeans.XmlLanguage
 
 fun Document.replaceString(oldString: String, newString: String, project: Project) {
     var startIndex = 0
@@ -30,6 +28,12 @@ fun Document.replaceString(oldString: String, newString: String, project: Projec
     }
 }
 
+/** [Document.setText] can't undo. */
+fun Document.setTextCanUndo(text: CharSequence, project: Project) {
+    WriteCommandAction.runWriteCommandAction(project, Computable {
+        this.replaceString(0, this.charsSequence.length, text)
+    })
+}
 
 class Rtl(
         val se: String,
@@ -96,22 +100,38 @@ abstract class MigrateAction() : BaseRefactoringAction(), RefactoringActionHandl
 
     override fun invoke(project: Project, editor: Editor, file: PsiFile?, dataContext: DataContext?) {
         val document = editor.document
-        rtlArray.forEach {
-            replace(project, document, it)
+        if (false) {
+            // multi undo
+            rtlArray.forEach {
+                doReplaceDocument(document, it, project)
+            }
+        } else {
+            // once undo
+            var text = document.text
+            rtlArray.forEach {
+                text = doReplaceText(text, it)
+            }
+            document.setTextCanUndo(text, project)
         }
     }
 
-    abstract fun replace(project: Project, document: Document, rtl: Rtl)
+    abstract fun doReplaceText(text: String, rtl: Rtl): String
+
+    abstract fun doReplaceDocument(document: Document, rtl: Rtl, project: Project)
 }
 
 class ToLRMigrateAction : MigrateAction() {
-    override fun replace(project: Project, document: Document, rtl: Rtl) {
+    override fun doReplaceText(text: String, rtl: Rtl): String = rtl.toLR(text)
+
+    override fun doReplaceDocument(document: Document, rtl: Rtl, project: Project) {
         document.replaceString(rtl.se, rtl.lr, project)
     }
 }
 
 class ToSEMigrateAction : MigrateAction() {
-    override fun replace(project: Project, document: Document, rtl: Rtl) {
+    override fun doReplaceText(text: String, rtl: Rtl): String = rtl.toSE(text)
+
+    override fun doReplaceDocument(document: Document, rtl: Rtl, project: Project) {
         document.replaceString(rtl.lr, rtl.se, project)
     }
 }
