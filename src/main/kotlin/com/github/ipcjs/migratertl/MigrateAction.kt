@@ -55,7 +55,7 @@ class Rtl(
             return result
         }
 
-        fun fromAttr(seAttr: String) = Rtl("\"$seAttr\"")
+        fun fromAttr(seAttr: String) = Rtl("$seAttr=\"")
     }
 
     fun toLR(str: String) = str.replace(this.se, this.lr)
