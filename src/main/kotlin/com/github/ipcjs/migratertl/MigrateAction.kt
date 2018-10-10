@@ -54,6 +54,8 @@ class Rtl(
             }
             return result
         }
+
+        fun fromAttr(seAttr: String) = Rtl("\"$seAttr\"")
     }
 
     fun toLR(str: String) = str.replace(this.se, this.lr)
@@ -66,23 +68,23 @@ abstract class MigrateAction() : BaseRefactoringAction(), RefactoringActionHandl
     companion object {
         val rtlArray = arrayOf(
                 /* constraint */
-                Rtl("layout_constraintStart_toEndOf"),
-                Rtl("layout_constraintEnd_toEndOf"),
-                Rtl("layout_constraintStart_toStartOf"),
-                Rtl("layout_constraintEnd_toStartOf"),
+                Rtl.fromAttr("layout_constraintStart_toEndOf"),
+                Rtl.fromAttr("layout_constraintEnd_toEndOf"),
+                Rtl.fromAttr("layout_constraintStart_toStartOf"),
+                Rtl.fromAttr("layout_constraintEnd_toStartOf"),
                 /* android */
-                Rtl("paddingStart"),
-                Rtl("paddingEnd"),
-                Rtl("layout_marginStart"),
-                Rtl("layout_marginEnd"),
-                Rtl("drawableStart"),
-                Rtl("drawableEnd"),
-                Rtl("layout_toStartOf"),
-                Rtl("layout_toEndOf"),
-                Rtl("layout_alignStart"),
-                Rtl("layout_alignEnd"),
-                Rtl("layout_alignParentStart"),
-                Rtl("layout_alignParentEnd")
+                Rtl.fromAttr("paddingStart"),
+                Rtl.fromAttr("paddingEnd"),
+                Rtl.fromAttr("layout_marginStart"),
+                Rtl.fromAttr("layout_marginEnd"),
+                Rtl.fromAttr("drawableStart"),
+                Rtl.fromAttr("drawableEnd"),
+                Rtl.fromAttr("layout_toStartOf"),
+                Rtl.fromAttr("layout_toEndOf"),
+                Rtl.fromAttr("layout_alignStart"),
+                Rtl.fromAttr("layout_alignEnd"),
+                Rtl.fromAttr("layout_alignParentStart"),
+                Rtl.fromAttr("layout_alignParentEnd")
         )
     }
 
